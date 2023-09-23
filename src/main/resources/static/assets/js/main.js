@@ -96,7 +96,7 @@
     });
 
 
-    $('.hero__categories__all').on('click', function(){
+    $('.hero__categories__all').on('click', function () {
         $('.hero__categories ul').slideToggle(400);
     });
 
@@ -200,8 +200,8 @@
     });
 
     /*-------------------
-		Quantity change
-	--------------------- */
+       Quantity change
+       --------------------- */
     var proQty = $('.pro-qty');
     proQty.prepend('<span class="dec qtybtn">-</span>');
     proQty.append('<span class="inc qtybtn">+</span>');
@@ -220,5 +220,92 @@
         }
         $button.parent().find('input').val(newVal);
     });
-
 })(jQuery);
+
+
+        /*-------------------
+        Add item into cart
+        --------------------- */
+
+        function addCart(id) {
+            const quantity = document.getElementById(`quantity-product-${id}`).value;
+
+            const url = `/cart/add?id=${id}&quantity=${quantity}`;
+            fetch(url, {
+                method: 'POST',
+            }).then(function (response) {
+                if (response.ok) {
+                    alertify.success('Success!!');
+                } else {
+                    alertify.error('Fail!!');
+                }
+            });
+        }
+
+        /*-------------------
+            Update quantity item into cart
+            --------------------- */
+
+        function updateItem(id) {
+            // Get the updated quantity from the input field
+            const quantity = document.getElementById(`quantity-item-${id}`).value;
+
+            //Get price item
+            const price = parseFloat(document.getElementById(`price-item-${id}`).innerText);
+
+            const url = `/cart/update?id=${id}&quantity=${quantity}`;
+            // Construct the URL for the POST request
+            fetch(url, {
+                method: 'POST',
+            }).then(function (response) {
+                if (quantity == 0) {
+                    removeItem(id);
+                }
+                if (response.ok) {
+                    const totalPrice = (quantity * price).toFixed(2);
+                    document.getElementById(`display-price-${id}`).innerText = totalPrice + ' $';
+                    updatedisplayItemCart();
+                    alertify.success('Update Success!!');
+                } else {
+                    alertify.error('Update Fail!!');
+                }
+            });
+        }
+
+        /*-------------------
+        Delete item into cart
+        --------------------- */
+
+        function removeItem(id) {
+            fetch('/cart/' + id, {
+                method: 'DELETE',
+            }).then(function (response) {
+                if (response.ok) {
+                    document.getElementById(`remove-item-${id}`).remove();
+                    alertify.success('Delete Success!!');
+                    updatedisplayItemCart();
+                } else {
+                    alertify.error('Delete Fail!!');
+                }
+            });
+        }
+
+
+        function updatedisplayItemCart() {
+            const itemRows = document.querySelectorAll(".cart-item");
+            let subtotal = 0;
+            let totalQuantity = 0;
+            itemRows.forEach(function (row){
+                const price = parseFloat(row.querySelector(".shoping__cart__price").textContent);
+                const quantity = parseInt(row.querySelector(".pro-qty input").value);
+                const total = price * quantity;
+                subtotal += total;
+                totalQuantity += quantity;
+            });
+
+            const totalPriceElement = document.getElementById("totalPrice");
+            const totalQuantityElement = document.getElementById("totalQuantity");
+
+            totalPriceElement.textContent = "$" + subtotal.toFixed(2);
+            totalQuantityElement.textContent = totalQuantity ;
+        }
