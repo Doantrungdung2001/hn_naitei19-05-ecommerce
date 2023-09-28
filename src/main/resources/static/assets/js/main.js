@@ -263,7 +263,7 @@
                 }
                 if (response.ok) {
                     const totalPrice = (quantity * price).toFixed(2);
-                    document.getElementById(`display-price-${id}`).innerText = totalPrice + ' $';
+                    document.getElementById(`display-price-${id}`).innerText = totalPrice + ' VND';
                     updatedisplayItemCart();
                     alertify.success('Update Success!!');
                 } else {
@@ -307,6 +307,21 @@
             });
         }
 
+        function vnpayPayment() {
+            // const totalPrice = parseFloat(document.getElementById("total-price-payment").innerText);
+            const totalPrice = 1000000;
+            const url = `/payment/vnpay?totalPirce=${totalPrice}`;
+
+            // Construct the URL for the POST request
+            fetch(url, {
+                method: 'GET'
+            }).then(function (response) {
+                if (response.url) {
+                    console.log(response.url);
+                }
+            });
+        }
+
         function updatedisplayItemCart() {
             const itemRows = document.querySelectorAll(".cart-item");
             let subtotal = 0;
@@ -322,6 +337,6 @@
             const totalPriceElement = document.getElementById("totalPrice");
             const totalQuantityElement = document.getElementById("totalQuantity");
 
-            totalPriceElement.textContent = "$" + subtotal.toFixed(2);
+            totalPriceElement.textContent = "VND" + subtotal.toFixed(2);
             totalQuantityElement.textContent = totalQuantity ;
         }

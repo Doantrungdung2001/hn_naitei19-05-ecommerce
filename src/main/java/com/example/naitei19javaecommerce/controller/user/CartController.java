@@ -38,7 +38,7 @@ public class CartController {
         model.addAttribute("items", items);
         model.addAttribute("totalQuantity", totalQuantity);
         model.addAttribute("totalPrice", totalPrice);
-        return "user/cart/layout-cart";
+        return "user/cart/shopping-cart";
     }
 
 
@@ -54,7 +54,7 @@ public class CartController {
             cartService.addCart(userService.getUserisLogin());
             cartItemService.addItem(cartService.checkExist(userId), productService.findProductById(id), userId, quantity);
         }
-        return "user/cart/layout-cart";
+        return "user/cart/shopping-cart";
     }
 
     // update quantity item in cart
@@ -70,7 +70,7 @@ public class CartController {
             message = "error";
         }
         model.addAttribute("alert", message);
-        return "user/cart/layout-cart";
+        return "user/cart/shopping-cart";
     }
 
     //delete item by id item
@@ -85,7 +85,7 @@ public class CartController {
             message = "Item not exits!!! Please reload again!!!";
         }
         model.addAttribute("alert", message);
-        return "user/cart/layout-cart";
+        return "user/cart/shopping-cart";
     }
 
     // display quantity and price of item in header
@@ -97,7 +97,8 @@ public class CartController {
         BigDecimal totalPrice = cartItemService.calculateTotalCartPrice(items);
         model.addAttribute("totalQuantity", totalQuantity);
         model.addAttribute("totalPrice", totalPrice);
-        return "layout/user/header";
+//        return "layout/user/header";
+        return "layout/user/base-layout";
     }
 
     @DeleteMapping(value = "/reset")
@@ -111,6 +112,6 @@ public class CartController {
             status = "fail";
         }
         model.addAttribute("alert", status);
-        return "user/cart/layout-cart";
+        return "user/cart/shopping-cart";
     }
 }

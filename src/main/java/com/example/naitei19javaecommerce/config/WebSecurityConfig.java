@@ -15,6 +15,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -37,8 +42,13 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()).authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/home/**", "/shop/**", "/login/**","/filter/**").permitAll()
+        http.csrf(csrf -> csrf.disable())
+                .cors().and()
+//                .cors(cors -> {
+//                    cors.configurationSource(corsConfigurationSource());
+//                })
+                .authorizeHttpRequests((auth) -> auth
+                .requestMatchers("/home/**", "/shop/**", "/login/**","/filter/**","/payment/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("0")
                 .requestMatchers("/cart/**").hasAuthority("1")
                 .anyRequest().authenticated())
@@ -58,6 +68,17 @@ public class WebSecurityConfig {
                 );
         return http.build();
     }
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.addAllowedOrigin("*"); // Cho phép truy cập từ tất cả các nguồn gốc
+        config.addAllowedHeader("*"); // Cho phép tất cả các tiêu đề
+        config.addAllowedMethod("*"); // Cho phép tất cả các phương thức HTTP
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+
 
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
@@ -75,5 +96,18 @@ public class WebSecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager() {
         return new ProviderManager(authenticationProvider());
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:8080");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new
+                UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

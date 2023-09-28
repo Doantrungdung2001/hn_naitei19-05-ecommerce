@@ -5,12 +5,11 @@
       layout:decorate="layout/user/base-layout">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Cart</title>
 </head>
 
-<body>
+<body layout:fragment="content">
 <!-- Breadcrumb Section Begin -->
-<!--<section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">-->
 <section class="breadcrumb-section set-bg" data-setbg="assets/img/breadcrumb.jpg">
     <div class="container">
         <div class="row">
@@ -51,7 +50,8 @@
                                 <h5 th:text="${item.product.name}"></h5>
                             </td>
                             <td class="shoping__cart__price">
-                                <span th:text="${item.product.price} + ' $'" th:id="'price-item-' + ${item.product.id}"></span>
+                                <span th:text="${item.product.price} + ' $'"
+                                      th:id="'price-item-' + ${item.product.id}"></span>
                             </td>
                             <td class="shoping__cart__quantity" th:onclick="'updateItem(' + ${item.product.id} + ')'">
                                 <div class="quantity">
@@ -62,7 +62,7 @@
                                 </div>
                             </td>
                             <td class="shoping__cart__total" th:id="'display-price-' + ${item.product.id}"
-                                th:text="${#numbers.formatDecimal(item.quantity * item.product.price,0,2)} + ' $'">
+                                th:text="${#numbers.formatDecimal(item.quantity * item.product.price,0,2)} + ' VND'">
                             </td>
                             <td class="shoping__cart__item__close">
                                 <a th:onclick="'removeItem(' + ${item.product.id} + ')'">
@@ -87,9 +87,9 @@
                     <h5>Cart Total</h5>
                     <ul>
                         <li>TotalQuantity <span th:text="${totalQuantity}" th:id="totalQuantity"></span></li>
-                        <li>TotalPrice <span th:text="${totalPrice} + ' $'" th:id="totalPrice"></span></li>
+                        <li>TotalPrice <span th:text="${totalPrice} + ' VND'" th:id="totalPrice"></span></li>
                     </ul>
-                    <a th:onclick="'resetItem()'" class="primary-btn">PROCEED TO CHECKOUT</a>
+                    <a th:href="@{/checkout}" class="primary-btn">PROCEED TO CHECKOUT</a>
                 </div>
             </div>
         </div>
